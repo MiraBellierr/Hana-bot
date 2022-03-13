@@ -1,3 +1,3 @@
-# Rinne/Hana
+# Hana
 
 A Discord Bot for Evos Lair
