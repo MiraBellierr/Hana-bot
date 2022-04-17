@@ -14,9 +14,8 @@ module.exports = async (client, message) => {
 		let member;
 
 		member = await Member.findOne({ where: { userId: message.author.id } });
-		let xpGained = member.get("xpGained");
-
 		if (!member) return;
+		let xpGained = member.get("xpGained");
 
 		client.timeout.set(message.author.id, Date.now());
 
