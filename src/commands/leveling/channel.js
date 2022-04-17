@@ -4,7 +4,7 @@ const { getChannel } = require("../../functions/index");
 module.exports = {
 	name: "channel",
 	description: "set an amount of xp gained per min for certain the channel",
-	category: "leveling",
+	category: "Leveling",
 	example: `${process.env.PREFIX}channel <channel> <xp>`,
 	run: async (client, message, args) => {
 		if (!message.member.permissions.has("ADMINISTRATOR"))

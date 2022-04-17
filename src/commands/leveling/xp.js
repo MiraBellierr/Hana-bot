@@ -3,7 +3,7 @@ const Models = require("../../database/schemas");
 module.exports = {
 	name: "xp",
 	description: "Set a general amount of xp gained every min",
-	category: "leveling",
+	category: "Leveling",
 	example: `${process.env.PREFIX}xp <xp>`,
 	run: async (client, message, args) => {
 		if (!message.member.permissions.has("ADMINISTRATOR"))

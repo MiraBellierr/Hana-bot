@@ -5,7 +5,7 @@ const ms = require("ms");
 module.exports = {
 	name: "role",
 	description: "set a role reward to the user when the user reached certain xp",
-	category: "leveling",
+	category: "Leveling",
 	example: `${process.env.PREFIX}role <role> <xp> <duration>`,
 	run: async (client, message, args) => {
 		if (!message.member.permissions.has("ADMINISTRATOR"))
