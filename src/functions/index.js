@@ -1,3 +1,6 @@
+/* eslint-disable no-return-assign */
+/* eslint-disable max-len */
+/* eslint-disable no-param-reassign */
 const Models = require("../database/schemas");
 
 module.exports = {
@@ -18,7 +21,55 @@ module.exports = {
 			target = message.mentions.members.first();
 		}
 		if (!target && toFind) {
-			target = members.find((member) => member.displayName.toLowerCase().includes(toFind) || member.user.tag.toLowerCase().includes(toFind));
+			target = members.find(
+				(member) =>
+					member.displayName.toLowerCase().includes(toFind) ||
+					member.user.tag.toLowerCase().includes(toFind)
+			);
+		}
+
+		return target;
+	},
+	async getChannel(message, toFind = "") {
+		toFind = toFind.toLowerCase();
+		let target = false;
+		const channels = await message.guild.channels.fetch();
+
+		target = await channels.get(toFind);
+
+		if (!target) {
+			target = message.guild.channels.cache.get(toFind);
+		}
+
+		if (!target && message.mentions.channels) {
+			target = message.mentions.channels.first();
+		}
+
+		if (!target && toFind) {
+			target = channels.find((channel) =>
+				channel.name.toLowerCase().includes(toFind)
+			);
+		}
+
+		return target;
+	},
+	async getRole(message, toFind = "") {
+		toFind = toFind.toLowerCase();
+		let target = false;
+		const roles = await message.guild.roles.fetch();
+
+		target = await roles.get(toFind);
+
+		if (!target) {
+			target = message.guild.roles.cache.get(toFind);
+		}
+
+		if (!target && message.mentions.roles) {
+			target = message.mentions.roles.first();
+		}
+
+		if (!target && toFind) {
+			target = roles.find((role) => role.name.toLowerCase().includes(toFind));
 		}
 
 		return target;
@@ -54,7 +105,7 @@ module.exports = {
 		let i = 0;
 
 		while (i < n) {
-			chunks.push(arr.slice(i, i += len));
+			chunks.push(arr.slice(i, (i += len)));
 		}
 		return chunks;
 	},

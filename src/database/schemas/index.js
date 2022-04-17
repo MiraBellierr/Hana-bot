@@ -17,6 +17,19 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				defaultValue: 0,
 			},
+			role: {
+				type: Sequelize.STRING,
+				unique: true,
+			},
+			rolexp: {
+				type: Sequelize.BIGINT,
+			},
+			generalxp: {
+				type: Sequelize.BIGINT,
+			},
+			roleTimeout: {
+				type: Sequelize.BIGINT,
+			},
 		});
 
 		Clan.sync();
@@ -33,10 +46,36 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				defaultValue: 0,
 			},
+			roleGained: {
+				type: Sequelize.BOOLEAN,
+				defaultValue: false,
+			},
+			xpGained: {
+				type: Sequelize.BIGINT,
+				defaultValue: 0,
+			},
+			activeRole: {
+				type: Sequelize.DATE,
+			},
 		});
 
 		Member.sync();
 
 		return Member;
+	},
+	Channel: () => {
+		const Channel = sequelize.define("channel", {
+			channelId: {
+				type: Sequelize.STRING,
+				unique: true,
+			},
+			xp: {
+				type: Sequelize.BIGINT,
+			},
+		});
+
+		Channel.sync();
+
+		return Channel;
 	},
 };

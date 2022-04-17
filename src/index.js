@@ -1,3 +1,6 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
+/* eslint-disable no-new */
 require("dotenv").config();
 const { Client, Collection } = require("discord.js");
 const Sequelize = require("sequelize");
@@ -31,15 +34,34 @@ new Sequelize("database", "user", "password", {
 	storage: "./database/database.sqlite",
 });
 
-const { Member, Clan } = require("./database/schemas");
+const { Member, Clan, Channel } = require("./database/schemas");
 
 Member();
 Clan();
+Channel();
 
 client.commands = new Collection();
 client.categories = fs.readdirSync("./src/commands");
+client.timeout = new Collection();
+client.cChannels = new Collection();
 
-["command", "event"].forEach((handler) => {
+(async function () {
+	const clan = await Clan().findOne({ where: { id: 1 } });
+	let channels = await Channel().findAll();
+
+	channels.forEach((channel) =>
+		client.cChannels.set(channel.dataValues.channelId, channel.dataValues.xp)
+	);
+
+	client.clan = {
+		generalxp: clan.get("generalxp"),
+		role: clan.get("role"),
+		rolexp: clan.get("rolexp"),
+		roleTimeout: clan.get("roleTimeout"),
+	};
+})();
+
+[("command", "event")].forEach((handler) => {
 	require(`./handlers/${handler}`)(client);
 });
 
