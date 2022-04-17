@@ -44,10 +44,79 @@ client.commands = new Collection();
 client.categories = fs.readdirSync("./src/commands");
 client.timeout = new Collection();
 client.cChannels = new Collection();
+client.aliases = new Collection();
+
+["command", "event"].forEach((handler) => {
+	require(`./handlers/${handler}`)(client);
+});
+
+client.on("messageCreate", async (message) => {
+	if (message.guild.id !== "728252329081438329") return;
+	if (message.author.bot) return;
+	const Models = require("./database/schemas");
+	const Member = Models.Member();
+
+	const timeout = client.timeout.get(message.author.id);
+	const timer = 60000;
+
+	if (!timeout || (timeout && timeout - (Date.now() - timer) < 1)) {
+		let member;
+
+		member = await Member.findOne({ where: { userId: message.author.id } });
+		if (!member) return;
+		let xpGained = member.get("xpGained");
+
+		client.timeout.set(message.author.id, Date.now());
+
+		if (!client.cChannels.get(message.channel.id)) {
+			Member.update(
+				{ xpGained: xpGained + client.clan.generalxp },
+				{ where: { userId: message.author.id } }
+			);
+		} else {
+			Member.update(
+				{
+					xpGained: xpGained + client.cChannels.get(message.channel.id),
+				},
+				{ where: { userId: message.author.id } }
+			);
+		}
+
+		member = await Member.findOne({ where: { userId: message.author.id } });
+		xpGained = member.get("xpGained");
+
+		if (xpGained >= client.clan.rolexp) {
+			if (!member.get("roleGained")) {
+				message.member.roles.add(client.clan.role);
+
+				Member.update(
+					{ roleGained: true, xpGained: 0, activeRole: Date.now() },
+					{ where: { userId: message.author.id } }
+				);
+			}
+		}
+
+		member = await Member.findOne({ where: { userId: message.author.id } });
+
+		if (
+			client.clan.roleTimeout !== null ||
+			member.get("activeRole") - (Date.now() - client.clan.roleTimeout) < 1
+		) {
+			message.member.roles.remove(client.clan.role);
+
+			Member.update(
+				{ roleGained: false },
+				{ where: { userId: message.author.id } }
+			);
+		}
+	}
+});
 
 (async function () {
 	const clan = await Clan().findOne({ where: { id: 1 } });
 	let channels = await Channel().findAll();
+
+	if (!clan) return;
 
 	channels.forEach((channel) =>
 		client.cChannels.set(channel.dataValues.channelId, channel.dataValues.xp)
@@ -60,9 +129,5 @@ client.cChannels = new Collection();
 		roleTimeout: clan.get("roleTimeout"),
 	};
 })();
-
-[("command", "event")].forEach((handler) => {
-	require(`./handlers/${handler}`)(client);
-});
 
 client.login(process.env.TOKEN);
