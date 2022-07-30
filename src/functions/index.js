@@ -97,7 +97,7 @@ module.exports = {
 		return true;
 	},
 	coinsEmoji() {
-		return "<:gold_coins:881053180333527071>";
+		return "<a:gold_coins:1002930664183701538>";
 	},
 	splitArrayIntoChunksOfLen(arr, len) {
 		const chunks = [];
