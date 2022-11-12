@@ -12,7 +12,15 @@ module.exports = async (client, message) => {
 	)
 		return;
 
-	if (message.channel.id === "813262057331884032") {
+	const Clan = Models.Clan();
+	const clan = await Clan.findOne({ where: { id: 1 } });
+	let channel;
+
+	if (clan) {
+		channel = clan.get("channel");
+	}
+
+	if (message.channel.id === channel) {
 		const string = ".cl donate";
 		if (message.content.startsWith(string)) {
 			const args = message.content.slice(string.length).trim().split(/ +/g);
