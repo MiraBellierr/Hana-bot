@@ -36,29 +36,29 @@ module.exports = async (client, message) => {
 			if (botMessage.first().embeds[0].title === "Error ⛔") {
 				message.channel.send(botMessage.first().embeds[0].description);
 				return;
-			}
+			} else if (botMessage.first().embeds[0].title.includes("Success")) {
+				const amount = parseInt(args[0], 10);
 
-			const amount = parseInt(args[0], 10);
-
-			const Member = Models.Member();
-			const member = await Member.findOne({
-				where: { userId: message.author.id },
-			});
-
-			if (!member) return;
-
-			const currentDonation = member.get("donation");
-
-			Member.update(
-				{ donation: currentDonation + amount },
-				{
+				const Member = Models.Member();
+				const member = await Member.findOne({
 					where: { userId: message.author.id },
-				}
-			);
+				});
 
-			message.channel.send(
-				`Successfully update ${message.author.tag} donation.`
-			);
+				if (!member) return;
+
+				const currentDonation = member.get("donation");
+
+				Member.update(
+					{ donation: currentDonation + amount },
+					{
+						where: { userId: message.author.id },
+					}
+				);
+
+				message.channel.send(
+					`Successfully update ${message.author.tag} donation.`
+				);
+			}
 		}
 	}
 
