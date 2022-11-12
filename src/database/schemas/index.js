@@ -30,6 +30,9 @@ module.exports = {
 			roleTimeout: {
 				type: Sequelize.BIGINT,
 			},
+			channel: {
+				type: Sequelize.STRING,
+			},
 		});
 
 		Clan.sync();
