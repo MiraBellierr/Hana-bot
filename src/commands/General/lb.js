@@ -70,7 +70,12 @@ module.exports = {
 			m.delete();
 
 			const paginated = new PaginateContent(client, message, leaderboard);
-			paginated.init();
+			paginated.init().catch((e) => {
+				console.log(e);
+				message.channel.send(
+					"Failed to send a list. Possibly because no one is registered."
+				);
+			});
 		} else if (args[0] === "xp") {
 			const Member = Models.Member();
 			const Clan = Models.Clan();
@@ -83,6 +88,7 @@ module.exports = {
 				userId: p.userId,
 				xpGained: p.xpGained,
 			}));
+
 			const memberCheck = [];
 
 			for (let i = 0; i < getAllMembersId.length; i++) {
@@ -116,7 +122,12 @@ module.exports = {
 			m.delete();
 
 			const paginated = new PaginateContent(client, message, leaderboard);
-			paginated.init();
+			paginated.init().catch((e) => {
+				console.log(e);
+				message.channel.send(
+					"Failed to send a list. Possibly because no one is registered."
+				);
+			});
 		}
 	},
 };

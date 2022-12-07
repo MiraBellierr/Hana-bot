@@ -1,12 +1,19 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable import/no-dynamic-require */
-/* eslint-disable global-require */
-const { readdirSync } = require('fs');
+const fs = require("fs");
+const Ascii = require("ascii-table");
+const table = new Ascii("Events");
+
+table.setHeading("Event", "File", "Status");
 
 module.exports = (client) => {
-  const events = readdirSync('./src/events/');
-  for (const event of events) {
-    const file = require(`../events/${event}`);
-    client.on(event.split('.')[0], (...args) => file(client, ...args));
-  }
+	fs.readdirSync("src/events/").forEach((dir) => {
+		const events = fs.readdirSync(`src/events/${dir}/`);
+
+		for (const file of events) {
+			const module = require(`../events/${dir}/${file}`);
+
+			client.on(dir.split(".")[0], (...args) => module(client, ...args));
+
+			table.addRow(dir, file, "✅");
+		}
+	});
 };
