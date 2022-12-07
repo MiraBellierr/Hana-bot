@@ -1,7 +1,7 @@
 const Models = require("../../database/schemas");
 
 module.exports = async (client, message) => {
-	if (message.guild.id !== "873441703330185247") return;
+	if (message.guild.id !== "728252329081438329") return;
 	if (message.author.bot) return;
 
 	const Member = Models.Member();
